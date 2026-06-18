@@ -2,6 +2,10 @@
   "cleanUrls": true,
   "rewrites": [
     {
+      "source": "/countdown-1830",
+      "destination": "/index.html"
+    },
+    {
       "source": "/countdown-1830.html",
       "destination": "/index.html"
     }
