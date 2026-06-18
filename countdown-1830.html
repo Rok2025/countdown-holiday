@@ -102,19 +102,35 @@
     }
 
     .brand-logo {
-      width: 54px;
-      height: 54px;
+      position: relative;
+      width: 58px;
+      height: 58px;
       flex: 0 0 auto;
-      display: grid;
-      place-items: center;
-      border-radius: 50%;
-      color: #ffffff;
-      font-size: 16px;
-      font-weight: 900;
+      display: block;
+      border-radius: 18px;
       background:
-        radial-gradient(circle at 30% 28%, rgba(255, 255, 255, 0.46), transparent 30%),
-        linear-gradient(135deg, var(--festival), var(--festival-bright) 58%, var(--sun));
-      box-shadow: 0 12px 28px rgba(15, 143, 116, 0.24);
+        linear-gradient(145deg, rgba(255, 255, 255, 0.78), rgba(232, 251, 241, 0.46)),
+        radial-gradient(circle at 30% 22%, rgba(255, 255, 255, 0.92), transparent 34%);
+      border: 1px solid rgba(255, 255, 255, 0.74);
+      box-shadow: 0 14px 30px rgba(15, 143, 116, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.82);
+    }
+
+    .brand-logo::after {
+      content: "";
+      position: absolute;
+      inset: 9px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.32);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.42);
+    }
+
+    .brand-logo svg {
+      position: relative;
+      z-index: 1;
+      display: block;
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 8px 14px rgba(15, 143, 116, 0.18));
     }
 
     .brand-copy {
@@ -615,8 +631,9 @@
       }
 
       .brand-logo {
-        width: 48px;
-        height: 48px;
+        width: 52px;
+        height: 52px;
+        border-radius: 16px;
       }
 
       .brand-motto {
@@ -690,10 +707,29 @@
 
     <div class="topline">
       <div class="brand" aria-label="群名">
-        <div class="brand-logo">学用</div>
+        <div class="brand-logo" aria-hidden="true">
+          <svg viewBox="0 0 64 64" role="img" focusable="false">
+            <defs>
+              <linearGradient id="learnLeaf" x1="14" x2="48" y1="12" y2="46">
+                <stop offset="0" stop-color="#16b887"/>
+                <stop offset="1" stop-color="#0f8f74"/>
+              </linearGradient>
+              <linearGradient id="useLeaf" x1="50" x2="16" y1="52" y2="18">
+                <stop offset="0" stop-color="#f4b83b"/>
+                <stop offset="1" stop-color="#d95d37"/>
+              </linearGradient>
+            </defs>
+            <path d="M31.5 9.5C20.8 10.5 13 18.8 12.7 30c-.2 7.2 3 13.1 8.1 16.9 1.5-7.8 5.9-14.1 13.1-18.9 4.8-3.2 8.3-7.5 10.2-13.1-3.3-3.7-7.6-5.9-12.6-5.4Z" fill="url(#learnLeaf)"/>
+            <path d="M32.5 54.5C43.2 53.5 51 45.2 51.3 34c.2-7.2-3-13.1-8.1-16.9-1.5 7.8-5.9 14.1-13.1 18.9-4.8 3.2-8.3 7.5-10.2 13.1 3.3 3.7 7.6 5.9 12.6 5.4Z" fill="url(#useLeaf)"/>
+            <path d="M22.7 46.7C24.5 39.8 28.8 34.2 36 29c4.1-3 7.1-6.6 8.8-11.1" fill="none" stroke="rgba(255,255,255,0.72)" stroke-width="3.2" stroke-linecap="round"/>
+            <path d="M41.3 17.3C39.5 24.2 35.2 29.8 28 35c-4.1 3-7.1 6.6-8.8 11.1" fill="none" stroke="rgba(255,255,255,0.72)" stroke-width="3.2" stroke-linecap="round"/>
+            <circle cx="24.3" cy="25.2" r="3.2" fill="#fff7d8"/>
+            <circle cx="39.7" cy="38.8" r="3.2" fill="#e9fff6"/>
+          </svg>
+        </div>
         <div class="brand-copy">
           <span class="brand-motto">
-            <span>学以到用</span>
+            <span>学以致用</span>
             <b>用以促学</b>
           </span>
         </div>
@@ -713,7 +749,7 @@
       <span class="mood-chip">18:30 开启轻松模式</span>
     </div>
     <div class="rush-line" aria-label="最后冲刺">
-      <span><strong>最后冲刺：</strong>学以到用，用以促学</span>
+      <span><strong>最后冲刺：</strong>学以致用，用以促学</span>
       <span>假期模式正在接管今天</span>
     </div>
 
@@ -754,7 +790,7 @@
 
     <div class="status" id="status">正在计算通往假期入口的剩余时间。</div>
     <section class="done-panel" aria-label="倒计时完成祝福">
-      <p class="done-title">放假了，学以到用，用以促学。</p>
+      <p class="done-title">放假了，学以致用，用以促学。</p>
       <p class="done-text">今天把学到的东西带到生活里，也把假期里的松弛带回新的学习。愿今晚开始，粽叶有香气，时间有余裕，快乐不用等。</p>
     </section>
   </main>
