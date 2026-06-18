@@ -1,0 +1,820 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>18:30 倒计时</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f6f8fb;
+      --panel: rgba(255, 255, 255, 0.58);
+      --text: #182235;
+      --muted: #667085;
+      --accent: #1677ff;
+      --accent-soft: #e8f2ff;
+      --festival: #0f8f74;
+      --festival-bright: #18b887;
+      --festival-soft: #e9f7f0;
+      --border: #d8e0eb;
+      --sun: #f4b83b;
+      --dragon: #d95d37;
+      --shadow: 0 24px 70px rgba(10, 76, 92, 0.18);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      display: grid;
+      place-items: center;
+      background:
+        linear-gradient(rgba(246, 248, 251, 0.72), rgba(246, 248, 251, 0.86)),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1600' height='1000' viewBox='0 0 1600 1000'%3E%3Cdefs%3E%3ClinearGradient id='sky' x1='0' x2='1' y1='0' y2='1'%3E%3Cstop offset='0' stop-color='%23e7f7ef'/%3E%3Cstop offset='0.55' stop-color='%23f6fbff'/%3E%3Cstop offset='1' stop-color='%23dff0ff'/%3E%3C/linearGradient%3E%3ClinearGradient id='leaf' x1='0' x2='1'%3E%3Cstop offset='0' stop-color='%230b8a68'/%3E%3Cstop offset='1' stop-color='%2338b77c'/%3E%3C/linearGradient%3E%3ClinearGradient id='boat' x1='0' x2='1'%3E%3Cstop offset='0' stop-color='%23b63d2f'/%3E%3Cstop offset='1' stop-color='%23e37f32'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1600' height='1000' fill='url(%23sky)'/%3E%3Ccircle cx='1280' cy='170' r='110' fill='%23ffe8a3' opacity='0.65'/%3E%3Cpath d='M0 715 C210 650 390 790 600 720 S1020 640 1225 720 1480 795 1600 735 L1600 1000 L0 1000 Z' fill='%2386cde4' opacity='0.52'/%3E%3Cpath d='M0 795 C240 735 400 850 620 790 S1000 710 1230 800 1480 875 1600 820 L1600 1000 L0 1000 Z' fill='%233a9fbe' opacity='0.44'/%3E%3Cpath d='M1040 675 C1165 615 1320 620 1460 690 C1330 715 1170 718 1040 675 Z' fill='url(%23boat)' opacity='0.9'/%3E%3Cpath d='M1136 642 L1166 585 L1198 645 Z' fill='%23f4c96a'/%3E%3Cpath d='M1250 630 L1288 565 L1325 638 Z' fill='%23f4c96a'/%3E%3Cpath d='M1375 662 C1400 642 1430 648 1454 676 C1426 682 1397 680 1375 662 Z' fill='%238b2a25'/%3E%3Cpath d='M230 280 C180 160 260 80 380 62 C430 185 345 268 230 280 Z' fill='url(%23leaf)' opacity='0.82'/%3E%3Cpath d='M350 405 C292 268 380 172 524 154 C580 292 490 388 350 405 Z' fill='url(%23leaf)' opacity='0.76'/%3E%3Cpath d='M144 560 C92 438 170 350 296 332 C352 462 264 548 144 560 Z' fill='url(%23leaf)' opacity='0.62'/%3E%3Cpath d='M455 116 L242 290 M590 210 L350 405 M305 386 L145 560' stroke='%23005f4c' stroke-width='9' stroke-linecap='round' opacity='0.35'/%3E%3Cpath d='M760 170 l46 80 -46 80 -46 -80 Z' fill='%23f5f0d3' stroke='%230f8f74' stroke-width='10'/%3E%3Cpath d='M760 170 l46 80 -46 26 -46 -26 Z' fill='%23e4c35b' opacity='0.8'/%3E%3Cpath d='M742 196 l40 110 M782 196 l-40 110' stroke='%230f8f74' stroke-width='7' opacity='0.65'/%3E%3Cpath d='M660 130 C720 92 802 90 860 132' fill='none' stroke='%23d33434' stroke-width='12' stroke-linecap='round'/%3E%3Ctext x='1040' y='300' font-family='serif' font-size='128' fill='%230f8f74' opacity='0.18'%3E端午安康%3C/text%3E%3C/svg%3E"),
+        var(--bg);
+      background-size: cover;
+      background-position: center;
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      animation: backgroundDrift 18s ease-in-out infinite alternate;
+    }
+
+    main {
+      position: relative;
+      overflow: hidden;
+      width: min(1080px, calc(100vw - 40px));
+      padding: clamp(28px, 4vw, 44px);
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.46)),
+        radial-gradient(circle at 18% 18%, rgba(24, 184, 135, 0.16), transparent 34%),
+        radial-gradient(circle at 88% 12%, rgba(244, 184, 59, 0.18), transparent 28%);
+      border: 1px solid rgba(255, 255, 255, 0.72);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px) saturate(1.2);
+    }
+
+    main::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(120deg, transparent 0 12%, rgba(255, 255, 255, 0.42) 12% 13%, transparent 13% 100%),
+        radial-gradient(circle at 8% 84%, rgba(15, 143, 116, 0.14), transparent 26%),
+        radial-gradient(circle at 96% 88%, rgba(217, 93, 55, 0.14), transparent 24%);
+      pointer-events: none;
+    }
+
+    main::after {
+      content: "";
+      position: absolute;
+      inset: -20%;
+      opacity: 0;
+      background:
+        conic-gradient(from 90deg at 50% 50%, transparent 0 12%, rgba(244, 184, 59, 0.28) 13% 15%, transparent 16% 35%, rgba(24, 184, 135, 0.22) 36% 38%, transparent 39% 100%);
+      transform: scale(0.8) rotate(0deg);
+      pointer-events: none;
+    }
+
+    main > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .topline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 28px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .brand-logo {
+      width: 46px;
+      height: 46px;
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      color: #ffffff;
+      font-size: 23px;
+      font-weight: 900;
+      background:
+        radial-gradient(circle at 30% 28%, rgba(255, 255, 255, 0.46), transparent 30%),
+        linear-gradient(135deg, var(--festival), var(--festival-bright) 58%, var(--sun));
+      box-shadow: 0 12px 28px rgba(15, 143, 116, 0.24);
+    }
+
+    .brand-copy {
+      display: grid;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .brand-kicker {
+      color: #618078;
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .brand-name {
+      color: #163b35;
+      font-size: clamp(18px, 2vw, 24px);
+      font-weight: 900;
+      line-height: 1.1;
+      white-space: nowrap;
+    }
+
+    .meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 0 12px;
+      border-radius: 999px;
+      background: rgba(22, 119, 255, 0.12);
+      color: var(--accent);
+      font-weight: 700;
+      white-space: nowrap;
+      box-shadow: 0 8px 20px rgba(22, 119, 255, 0.10);
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(40px, 5.4vw, 76px);
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+
+    .target {
+      margin: 0 0 8px;
+      color: var(--muted);
+      font-size: clamp(16px, 2vw, 20px);
+    }
+
+    .mood-line {
+      margin: 0 0 22px;
+      color: #1d5147;
+      font-size: clamp(16px, 2vw, 22px);
+      font-weight: 700;
+    }
+
+    .mood-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+
+    .mood-chip {
+      min-height: 34px;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 13px;
+      border-radius: 999px;
+      color: #1f3d35;
+      font-size: 14px;
+      font-weight: 800;
+      background: rgba(255, 255, 255, 0.52);
+      border: 1px solid rgba(255, 255, 255, 0.68);
+      box-shadow: 0 8px 20px rgba(10, 76, 92, 0.08);
+    }
+
+    .rush-line {
+      position: relative;
+      overflow: hidden;
+      min-height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin: -8px 0 24px;
+      padding: 0 16px;
+      border-radius: 999px;
+      color: #173e35;
+      font-size: 15px;
+      font-weight: 800;
+      background: rgba(255, 255, 255, 0.48);
+      border: 1px solid rgba(255, 255, 255, 0.72);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.68);
+    }
+
+    .rush-line::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(244, 184, 59, 0.34), transparent);
+      transform: translateX(-100%);
+      animation: rush 2.8s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    .rush-line span {
+      position: relative;
+      z-index: 1;
+      white-space: nowrap;
+    }
+
+    .rush-line strong {
+      color: var(--festival);
+    }
+
+    .hero-row {
+      display: grid;
+      gap: 18px;
+      margin-bottom: 30px;
+    }
+
+    .timer {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .holiday {
+      min-height: 104px;
+      padding: 18px 22px;
+      display: grid;
+      grid-template-columns: auto auto minmax(0, 1fr);
+      gap: 14px 22px;
+      align-items: center;
+      border: 1px solid rgba(255, 255, 255, 0.76);
+      border-radius: 16px;
+      background:
+        linear-gradient(135deg, rgba(231, 248, 236, 0.78), rgba(255, 255, 255, 0.48)),
+        radial-gradient(circle at 86% 16%, rgba(244, 184, 59, 0.28), transparent 30%);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.64);
+    }
+
+    .holiday-title {
+      margin: 0;
+      color: var(--festival);
+      font-size: 19px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .holiday-date {
+      margin: 0;
+      color: #1f3d35;
+      font-size: clamp(22px, 3vw, 30px);
+      line-height: 1.25;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .holiday-note {
+      margin: 0;
+      color: #42615b;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .unit {
+      position: relative;
+      overflow: hidden;
+      min-height: 150px;
+      padding: 24px 16px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255, 255, 255, 0.72);
+      border-radius: 16px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.74), rgba(255, 255, 255, 0.42)),
+        radial-gradient(circle at 50% 0, rgba(244, 184, 59, 0.12), transparent 50%);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.64), 0 12px 26px rgba(10, 76, 92, 0.08);
+    }
+
+    .unit::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      background: linear-gradient(120deg, transparent 0 34%, rgba(255, 255, 255, 0.7) 45%, transparent 56% 100%);
+      transform: translateX(-120%);
+      pointer-events: none;
+    }
+
+    .number {
+      font-size: clamp(42px, 7vw, 80px);
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+      font-weight: 800;
+    }
+
+    .number--milliseconds {
+      font-size: clamp(36px, 5.2vw, 68px);
+      color: #14876f;
+      letter-spacing: 0.02em;
+      opacity: 0.88;
+      text-shadow: 0 0 16px rgba(15, 143, 116, 0.22);
+    }
+
+    .unit--milliseconds {
+      border-color: rgba(24, 184, 135, 0.42);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.66), rgba(230, 251, 241, 0.68)),
+        radial-gradient(circle at 50% 18%, rgba(24, 184, 135, 0.22), transparent 46%);
+    }
+
+    .label {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .status {
+      min-height: 46px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.48);
+      border: 1px solid rgba(255, 255, 255, 0.68);
+      color: #344054;
+      font-size: 16px;
+      line-height: 1.4;
+    }
+
+    .done-panel {
+      display: none;
+      margin-top: 18px;
+      padding: 18px 20px;
+      border-radius: 16px;
+      color: #173e35;
+      background:
+        linear-gradient(135deg, rgba(255, 247, 217, 0.82), rgba(232, 251, 241, 0.78)),
+        radial-gradient(circle at 92% 18%, rgba(217, 93, 55, 0.22), transparent 28%);
+      border: 1px solid rgba(255, 255, 255, 0.76);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72), 0 12px 34px rgba(15, 143, 116, 0.12);
+    }
+
+    .done-title {
+      margin: 0 0 8px;
+      font-size: clamp(24px, 3vw, 34px);
+      font-weight: 900;
+      line-height: 1.15;
+    }
+
+    .done-text {
+      margin: 0;
+      color: #42615b;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .confetti {
+      position: absolute;
+      top: -24px;
+      width: 9px;
+      height: 18px;
+      border-radius: 3px;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .confetti--1 {
+      left: 14%;
+      background: var(--sun);
+      transform: rotate(12deg);
+      animation-delay: 0s;
+    }
+
+    .confetti--2 {
+      left: 28%;
+      background: var(--festival-bright);
+      transform: rotate(-18deg);
+      animation-delay: 0.35s;
+    }
+
+    .confetti--3 {
+      left: 48%;
+      background: var(--dragon);
+      transform: rotate(20deg);
+      animation-delay: 0.7s;
+    }
+
+    .confetti--4 {
+      left: 68%;
+      background: #1677ff;
+      transform: rotate(-12deg);
+      animation-delay: 0.2s;
+    }
+
+    .confetti--5 {
+      left: 84%;
+      background: var(--sun);
+      transform: rotate(24deg);
+      animation-delay: 0.55s;
+    }
+
+    .sparkle {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: var(--sun);
+      box-shadow: 0 0 24px rgba(244, 184, 59, 0.64);
+      opacity: 0.72;
+      animation: float 2.4s ease-in-out infinite;
+    }
+
+    .sparkle:nth-of-type(1) {
+      top: 64px;
+      right: 112px;
+    }
+
+    .sparkle:nth-of-type(2) {
+      width: 9px;
+      height: 9px;
+      bottom: 76px;
+      left: 92px;
+      background: var(--festival-bright);
+      animation-delay: -0.9s;
+    }
+
+    .sparkle:nth-of-type(3) {
+      width: 10px;
+      height: 10px;
+      right: 46px;
+      bottom: 112px;
+      background: var(--dragon);
+      animation-delay: -1.4s;
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0) scale(1);
+      }
+      50% {
+        transform: translateY(-10px) scale(1.15);
+      }
+    }
+
+    @keyframes backgroundDrift {
+      0% {
+        background-position: 50% 50%;
+      }
+      100% {
+        background-position: 52% 48%;
+      }
+    }
+
+    @keyframes rush {
+      0% {
+        transform: translateX(-100%);
+      }
+      55%, 100% {
+        transform: translateX(100%);
+      }
+    }
+
+    @keyframes celebrate {
+      0% {
+        opacity: 0;
+        transform: scale(0.7) rotate(0deg);
+      }
+      20% {
+        opacity: 0.9;
+      }
+      100% {
+        opacity: 0;
+        transform: scale(1.18) rotate(28deg);
+      }
+    }
+
+    @keyframes shine {
+      0% {
+        opacity: 0;
+        transform: translateX(-120%);
+      }
+      22% {
+        opacity: 0.85;
+      }
+      100% {
+        opacity: 0;
+        transform: translateX(120%);
+      }
+    }
+
+    @keyframes confettiDrop {
+      0% {
+        opacity: 0;
+        transform: translateY(0) rotate(0deg);
+      }
+      12% {
+        opacity: 0.95;
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(340px) rotate(260deg);
+      }
+    }
+
+    .done .badge {
+      background: #fff4cf;
+      color: #ad6800;
+    }
+
+    .done .brand-logo {
+      animation: float 1.4s ease-in-out infinite;
+    }
+
+    .done::after {
+      animation: celebrate 2.2s ease-out infinite;
+    }
+
+    .done .mood-chip {
+      color: #173e35;
+      background: rgba(255, 244, 207, 0.72);
+    }
+
+    .done .unit {
+      border-color: rgba(244, 184, 59, 0.42);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.74), rgba(255, 246, 218, 0.62)),
+        radial-gradient(circle at 50% 0, rgba(244, 184, 59, 0.28), transparent 54%);
+    }
+
+    .done .unit::after {
+      animation: shine 1.8s ease-out infinite;
+    }
+
+    .done .number,
+    .done .number--milliseconds {
+      color: #099250;
+      opacity: 1;
+    }
+
+    .done .label {
+      color: #52635f;
+    }
+
+    .done .status {
+      color: #173e35;
+      background: rgba(255, 244, 207, 0.68);
+      border-color: rgba(244, 184, 59, 0.42);
+      font-weight: 800;
+    }
+
+    .done .done-panel {
+      display: block;
+    }
+
+    .done .confetti {
+      animation: confettiDrop 2.8s ease-in infinite;
+    }
+
+    @media (max-width: 680px) {
+      body {
+        place-items: start center;
+        padding: 12px 0;
+      }
+
+      main {
+        width: min(100% - 24px, 1080px);
+        padding: 20px;
+      }
+
+      .topline {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .meta {
+        justify-content: flex-start;
+      }
+
+      h1 {
+        font-size: clamp(36px, 12vw, 52px);
+      }
+
+      .mood-line {
+        margin-bottom: 16px;
+      }
+
+      .mood-strip {
+        gap: 8px;
+        margin-bottom: 18px;
+      }
+
+      .rush-line {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 4px;
+        min-height: 54px;
+        margin-bottom: 18px;
+        padding: 9px 14px;
+        border-radius: 16px;
+      }
+
+      .timer,
+      .holiday {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .hero-row {
+        gap: 14px;
+        margin-bottom: 18px;
+      }
+
+      .timer {
+        gap: 10px;
+      }
+
+      .holiday-title,
+      .holiday-date,
+      .holiday-note {
+        grid-column: 1 / -1;
+      }
+
+      .unit {
+        min-height: 112px;
+        padding: 18px 12px;
+      }
+
+      .done-panel {
+        padding: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main id="app">
+    <span class="sparkle"></span>
+    <span class="sparkle"></span>
+    <span class="sparkle"></span>
+    <span class="confetti confetti--1"></span>
+    <span class="confetti confetti--2"></span>
+    <span class="confetti confetti--3"></span>
+    <span class="confetti confetti--4"></span>
+    <span class="confetti confetti--5"></span>
+
+    <div class="topline">
+      <div class="brand" aria-label="群名">
+        <div class="brand-logo">用</div>
+        <div class="brand-copy">
+          <span class="brand-kicker">群倒计时</span>
+          <span class="brand-name">学以致用</span>
+        </div>
+      </div>
+      <div class="meta">
+        <span id="nowText">当前时间：--</span>
+        <span class="badge" id="badge">进行中</span>
+      </div>
+    </div>
+
+    <h1>18:30 倒计时</h1>
+    <p class="target" id="targetText">目标时间：今天 18:30</p>
+    <p class="mood-line">再坚持一下，粽叶香、龙舟声和小长假都在靠近。</p>
+    <div class="mood-strip" aria-label="假期期待">
+      <span class="mood-chip">放假快乐加载中</span>
+      <span class="mood-chip">端午小长假倒计时</span>
+      <span class="mood-chip">18:30 开启轻松模式</span>
+    </div>
+    <div class="rush-line" aria-label="最后冲刺">
+      <span><strong>最后冲刺：</strong>学以致用，准点放松</span>
+      <span>假期模式正在接管今天</span>
+    </div>
+
+    <div class="hero-row">
+      <section class="timer" aria-label="倒计时">
+        <div class="unit">
+          <div>
+            <div class="number" id="hours">00</div>
+            <div class="label" id="hoursLabel">小时</div>
+          </div>
+        </div>
+        <div class="unit">
+          <div>
+            <div class="number" id="minutes">00</div>
+            <div class="label" id="minutesLabel">分钟</div>
+          </div>
+        </div>
+        <div class="unit">
+          <div>
+            <div class="number" id="seconds">00</div>
+            <div class="label" id="secondsLabel">秒</div>
+          </div>
+        </div>
+        <div class="unit unit--milliseconds">
+          <div>
+            <div class="number number--milliseconds" id="milliseconds">000</div>
+            <div class="label" id="millisecondsLabel">毫秒</div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="holiday" aria-label="端午节放假安排">
+        <p class="holiday-title">端午节放假</p>
+        <p class="holiday-date">6月19日 - 6月21日</p>
+        <p class="holiday-note">周五至周日，共3天。今天 18:30 是快乐入口，过完这一刻就把节奏切到清爽模式。</p>
+      </aside>
+    </div>
+
+    <div class="status" id="status">正在计算通往假期入口的剩余时间。</div>
+    <section class="done-panel" aria-label="倒计时完成祝福">
+      <p class="done-title">放假了，学以致用小长假模式开启。</p>
+      <p class="done-text">电脑可以合上，节奏可以放慢。愿今晚开始，粽叶有香气，时间有余裕，快乐不用等。</p>
+    </section>
+  </main>
+
+  <script>
+    const app = document.getElementById('app')
+    const nowText = document.getElementById('nowText')
+    const targetText = document.getElementById('targetText')
+    const badge = document.getElementById('badge')
+    const hoursEl = document.getElementById('hours')
+    const minutesEl = document.getElementById('minutes')
+    const secondsEl = document.getElementById('seconds')
+    const millisecondsEl = document.getElementById('milliseconds')
+    const hoursLabel = document.getElementById('hoursLabel')
+    const minutesLabel = document.getElementById('minutesLabel')
+    const secondsLabel = document.getElementById('secondsLabel')
+    const millisecondsLabel = document.getElementById('millisecondsLabel')
+    const statusEl = document.getElementById('status')
+    const searchParams = new URLSearchParams(window.location.search)
+    const previewDone = searchParams.get('preview') === 'done' || searchParams.get('done') === '1'
+
+    function pad(value) {
+      return String(value).padStart(2, '0')
+    }
+
+    function formatDateTime(date) {
+      return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`
+    }
+
+    function getTarget() {
+      const now = new Date()
+      return new Date(now.getFullYear(), now.getMonth(), now.getDate(), 18, 30, 0, 0)
+    }
+
+    function update() {
+      const now = new Date()
+      const target = getTarget()
+      const start = new Date(target.getFullYear(), target.getMonth(), target.getDate(), 0, 0, 0, 0)
+      const remaining = previewDone ? 0 : target - now
+
+      nowText.textContent = `当前时间：${formatDateTime(now)}`
+      targetText.textContent = `目标时间：${formatDateTime(target)}`
+
+      if (remaining <= 0) {
+        app.classList.add('done')
+        badge.textContent = '假期模式'
+        hoursEl.textContent = '端'
+        minutesEl.textContent = '午'
+        secondsEl.textContent = '快'
+        millisecondsEl.textContent = '乐'
+        hoursLabel.textContent = '粽叶已香'
+        minutesLabel.textContent = '龙舟已近'
+        secondsLabel.textContent = '工作收尾'
+        millisecondsLabel.textContent = '快乐接管'
+        statusEl.textContent = '18:30 到了，今天的努力收工，端午小长假正式开启。'
+        document.title = '端午小长假模式开启'
+        return
+      }
+
+      const totalSeconds = Math.floor(remaining / 1000)
+      const hours = Math.floor(totalSeconds / 3600)
+      const minutes = Math.floor((totalSeconds % 3600) / 60)
+      const seconds = totalSeconds % 60
+      const milliseconds = Math.max(0, remaining % 1000)
+
+      app.classList.remove('done')
+      badge.textContent = '进行中'
+      hoursEl.textContent = pad(hours)
+      minutesEl.textContent = pad(minutes)
+      secondsEl.textContent = pad(seconds)
+      millisecondsEl.textContent = pad(milliseconds).padStart(3, '0')
+      hoursLabel.textContent = '小时'
+      minutesLabel.textContent = '分钟'
+      secondsLabel.textContent = '秒'
+      millisecondsLabel.textContent = '毫秒'
+      statusEl.textContent = `离快乐入口 18:30 还有 ${hours} 小时 ${minutes} 分钟 ${seconds} 秒，假期感正在靠近。`
+      document.title = `${pad(hours)}:${pad(minutes)}:${pad(seconds)} 到 18:30`
+    }
+
+    update()
+    window.setInterval(update, 37)
+  </script>
+</body>
+</html>
